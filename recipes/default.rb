@@ -17,15 +17,17 @@
 # limitations under the License.
 #
 
-xml = package "libxml2-dev" do
-  action :nothing
+packages = case node.platform_family
+when 'fedora','rhel','centos'
+             %w{libxml2-devel libxslt-devel}
+when 'debian','ubuntu'
+             %w{libxml2-dev libxslt-dev}
 end
-xml.run_action( :install )
 
-xslt = package "libxslt1-dev" do
-  action :nothing
+packages.each do |pkg|
+  r = package pkg
+  r.run_action(:install)
 end
-xslt.run_action( :install )
 
 fog = gem_package "fog" do
   action :nothing
